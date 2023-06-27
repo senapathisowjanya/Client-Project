@@ -85,18 +85,21 @@
   } */
   .user-type-group div{
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: start;
     
   } 
 
   .user-type-group div input{
     width: 15px;
+    /* border:1px solid red; */
+    margin-left: 20px;
    
   }
   
-   /* .user-type-group label {
+   .user-type-group div label {
     margin-left: 10px;
-  } */
+    /* border:1px solid red; */
+  }
   
   /* .user-type-group input[type='radio'] {
     margin-right: 5px;

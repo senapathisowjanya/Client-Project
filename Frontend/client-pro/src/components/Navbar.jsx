@@ -6,7 +6,8 @@ function Navbar() {
     <div style={{display:"flex",justifyContent:"center",margin:"10px 0px 30px 0px"}}>
       <center>
       <Link to={"/Login"}>Login/</Link>
-      <Link to={"/Signup"}>SignUp</Link>
+      <Link to={"/Signup"}>SignUp/</Link>
+      <Link to={"/JobPost"}>JobPost</Link>
       </center>
     </div>
   )

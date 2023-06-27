@@ -1,13 +1,13 @@
-
 import React, { useState } from 'react';
-import "./Signup.css"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap CSS
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [loginSuccess, setLoginSuccess] = useState(false);
   const [userType, setUserType] = useState('recruiter');
 
   const handleEmailChange = (e) => {
@@ -21,7 +21,6 @@ const Signup = () => {
   const handleUserTypeChange = (e) => {
     setUserType(e.target.value);
   };
-
 
   const validateForm = () => {
     let isValid = true;
@@ -54,84 +53,126 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let obj = {
+      email,
+      password,
+    };
 
     if (validateForm()) {
-      
-      console.log('Login successful');
-      setLoginSuccess(true);
+      fetch('http://localhost:8080/user/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(obj),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.msg);
+          if (data.msg === 'User Successfully Registered') {
+            toast.success(data.msg, {
+              position: 'top-center',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'dark',
+            });
+          } else {
+            toast.warn(data.msg, {
+              position: 'top-center',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'dark',
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
     }
-    // let obj={
-    //     email,
-    //     password
-    // }
-    // console.log(obj)
+    setTimeout(() => {
+      setEmail('');
+      setPassword('');
+    }, 1000);
   };
 
   return (
-    <div className="signup-form-container">
-      <center><h1 className="form1-header">Register</h1></center>
-      {loginSuccess && (
-      <div className="success-popup">
-        <span className="success-icon">&#10003;</span>
-        <p>Register Successful!</p>
-      </div>
-    )}
-      <form onSubmit={handleSubmit}>
-        <div className="form1-group">
-          <label>Email:</label>
-          <input
-            type="text"
-            value={email}
-            onChange={handleEmailChange}
-            className={emailError ? 'invalid' : ' '}
-          />
-          {emailError && <p className="error-message">{emailError}</p>}
-        </div>
-        <div className="form1-group">
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-            className={passwordError ? 'invalid' : ''}
-          />
-          {passwordError && <p className="error-message">{passwordError}</p>}
-        </div>
-        <div className="form1-group">
-          <div className="user-type-group">
-           <div>
-           <label>Recruiter</label>
-           <input
-                type="radio"
-                value="recruiter"
-                checked={userType === 'recruiter'}
-                onChange={handleUserTypeChange}
-              />
-           </div>
-            <div>
-            <label>Job Seeker</label>
+    <div className="container d-flex align-items-center justify-content-center vh-100">
+      <div className="signup-form-container border p-4 custom-width">
+        <h1 className="text-center text-gray">Register</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Email:</label>
             <input
-                type="radio"
-                value="jobseeker"
-                checked={userType === 'jobseeker'}
-                onChange={handleUserTypeChange}
-              />
+              type="text"
+              value={email}
+              onChange={handleEmailChange}
+              className={`form-control ${emailError ? 'is-invalid' : ''}`}
+            />
+            {emailError && <p className="error-message">{emailError}</p>}
+          </div>
+          <div className="form-group">
+            <label>Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={handlePasswordChange}
+              className={`form-control ${passwordError ? 'is-invalid' : ''}`}
+            />
+            {passwordError && <p className="error-message">{passwordError}</p>}
+          </div>
+          <div className="form-group">
+            <div className="user-type-group">
+              <div className="form-check">
+                <input
+                  type="radio"
+                  className="form-check-input"
+                  value="recruiter"
+                  checked={userType === 'recruiter'}
+                  onChange={handleUserTypeChange}
+                />
+                <label className="form-check-label">Recruiter</label>
+              </div>
+              <div className="form-check">
+                <input
+                  type="radio"
+                  className="form-check-input"
+                  value="jobseeker"
+                  checked={userType === 'jobseeker'}
+                  onChange={handleUserTypeChange}
+                />
+                <label className="form-check-label">Job Seeker</label>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="form1-group">
-            <center>
-          <button type="button" className="signupback-button">BACK</button>
-          <button type="submit" className="signup-button">REGISTER</button>
-            </center>
-        </div>
-      </form>
+          <div className="form-group">
+            <div className="text-center">
+              <button type="submit" className="btn btn-primary bg-success text-white">
+                REGISTER
+              </button>
+            </div>
+          </div>
+        </form>
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+      </div>
     </div>
   );
 };
 
-
-
-
-
-export default Signup
+export default Signup;

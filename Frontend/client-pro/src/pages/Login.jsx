@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
 import "./Login.css"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -47,16 +49,58 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let obj={
+      email,
+      password
+  }
 
     if (validateForm()) {
-      
-      console.log('Login successful');
+
+      fetch("http://localhost:8080/user/login", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(obj)
+      }).then((res) => res.json())
+        .then((data) => {
+          console.log(data.msg)
+          if(data.msg==="Login Success"){
+            toast.success(data.msg, {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+              });
+          }else{
+            toast.warn(data.msg, {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+              });
+          }
+        })
+        .catch((err) => {
+         
+          console.log(err.message)
+        })
+
+
     }
-    let obj={
-        email,
-        password
-    }
-    console.log(obj)
+    setTimeout(()=>{
+      setEmail("")
+      setPassword("")
+    },1000)
+
+    
+    
   };
 
   return (
@@ -90,6 +134,18 @@ const Login = () => {
             </center>
         </div>
       </form>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   );
 };
