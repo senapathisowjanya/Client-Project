@@ -2,6 +2,35 @@ const express = require("express")
 const UserModel = require("../model/user.model")
 const userRoute = express.Router()
 const bcrypt = require("bcrypt")
+require("dotenv").config()
+const {createTransport} = require("nodemailer")
+
+const transporter = createTransport(
+    {
+        host:"smtp-relay.sendinblue.com",
+        port: 587,
+        auth :{
+            user:"sanjuvenky246@gmail.com",
+            pass:process.env.MAIL_API_KEY
+        }
+    }
+);
+
+
+const mailOptions = {
+    from:"Loginintaqt@gmail.com",
+    to:"sanjuvenky246@gmail.com",
+    subject:"Test mail coming from node",
+    text:"Hello welcome!"
+}
+
+transporter.sendMail(mailOptions, function(error, info){
+    if(error){
+        console.log(error);
+    }else{
+        console.log("email sent successfully", info.response)
+    }
+})
 
 
 userRoute.post("/register", async(req, res)=>{

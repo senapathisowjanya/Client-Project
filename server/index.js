@@ -1,10 +1,11 @@
 const express = require("express")
 const userRoute = require("./controllers/user.controller")
 const connectionToDb = require("./config/connection")
+const postJobRoute = require("./controllers/postjob.controller")
 const app = express()
 app.use(express.json())
 app.use("/user", userRoute)
-
+app.use("/jobs", postJobRoute)
 
 app.listen(8080,async ()=>{
    try {
