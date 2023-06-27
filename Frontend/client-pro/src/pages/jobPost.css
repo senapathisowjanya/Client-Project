@@ -1,0 +1,27 @@
+.checkbox-input{
+   padding: 3px;
+   margin: 5px;
+  border: 1px solid gray;
+}
+.form-check-label{
+    /* border: 1px solid red; */
+    margin-right: 13px;
+}
+
+.status {
+   display: flex;
+   flex-direction: row-reverse;
+  }
+  
+ 
+  @media (max-width: 767px) {
+    .status {
+     display: flex;
+     justify-content: center;
+    }
+  }
+
+   .form-control{
+    border: 1px solid gray;
+   }
+  
