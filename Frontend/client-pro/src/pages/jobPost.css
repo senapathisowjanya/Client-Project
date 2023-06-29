@@ -24,4 +24,21 @@
    .form-control{
     border: 1px solid gray;
    }
+  .radio-input{
+    padding: 3px;
+   margin: 5px;
+  border: 1px solid gray;
+  }
+  
+  input:focus,
+textarea:focus,
+select:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border: 1px solid gray;
+  }
+  input:focus-visible {
+  outline: none;
+}
+  
   

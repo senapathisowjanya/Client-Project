@@ -3,10 +3,12 @@ import { FaPlus, FaTimes } from 'react-icons/fa';
 import './jobPost.css';
 
 const JobPost = () => {
-  const [position, setPosition] = useState('');
-  const [description, setDescription] = useState('');
-  const [positionType, setPositionType] = useState([]);
+  const [position, setPosition] = useState('')
+  const [description, setDescription] = useState('')
+  const [positionType, setPositionType] = useState([])
   const [questions, setQuestions] = useState(['']);
+  const [benefits, setBenefits] = useState('')
+  const [status, setStatus] = useState('draft')
 
   const handlePositionChange = (e) => {
     setPosition(e.target.value);
@@ -18,12 +20,15 @@ const JobPost = () => {
 
   const handlePositionTypeChange = (e) => {
     const selectedPositionType = e.target.value;
-    if (positionType.includes(selectedPositionType)) {
-      setPositionType(positionType.filter((type) => type !== selectedPositionType));
-    } else {
+    const isChecked = e.target.checked;
+  
+    if (isChecked) {
       setPositionType([...positionType, selectedPositionType]);
+    } else {
+      setPositionType(positionType.filter((type) => type !== selectedPositionType));
     }
   };
+  
 
   const handleQuestionChange = (e, index) => {
     const updatedQuestions = [...questions];
@@ -41,16 +46,41 @@ const JobPost = () => {
     setQuestions(updatedQuestions);
   };
 
+  const handleBenefitsChange = (e) => {
+    setBenefits(e.target.value);
+    
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    
+
     let obj = {
-      position,
-      description,
-      positionType,
-      questions,
+      position: position,
+      jobDescription: description,
+      positionType: positionType,
+      addNewQuestion: questions,
+      benefits: benefits,
+      status: 'Posted',
     };
     console.log(obj);
+    fetch('http://localhost:8080/jobs/postjob', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(obj),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.msg === 'Job posted successfully') {
+          setStatus('Posted');
+        }
+      });
+
+    setPosition('');
+    setDescription('');
+    setPositionType([]);
+    setQuestions(['']);
+    setBenefits('');
   };
 
   return (
@@ -58,7 +88,7 @@ const JobPost = () => {
       <form onSubmit={handleFormSubmit} className="text-center p-3">
         <center>
           <h4>Job Post</h4>
-          <p className="status">Status: Draft</p>
+          <p className="status">Status: {status}</p>
         </center>
 
         <div className="form-group text-start">
@@ -69,6 +99,7 @@ const JobPost = () => {
             id="position"
             value={position}
             onChange={handlePositionChange}
+            required
           />
         </div>
         <div className="form-group text-start">
@@ -79,11 +110,13 @@ const JobPost = () => {
             rows="5"
             value={description}
             onChange={handleDescriptionChange}
+            required
           ></textarea>
         </div>
-        <div className="form-group text-start">
+        
+        <div className="form-group text-start ">
           <label>Position Type</label>
-          <div className="d-flex flex-wrap justify-content-start">
+          <div className="d-flex flex-wrap justify-content-start ">
             <div className="form-check gap-2">
               <input
                 type="checkbox"
@@ -92,6 +125,8 @@ const JobPost = () => {
                 value="W2"
                 checked={positionType.includes('W2')}
                 onChange={handlePositionTypeChange}
+                required
+                
               />
               <label className="form-check-label" htmlFor="positionTypeW2">
                 W2
@@ -118,9 +153,43 @@ const JobPost = () => {
                 value="C2C"
                 checked={positionType.includes('C2C')}
                 onChange={handlePositionTypeChange}
+                
               />
               <label className="form-check-label" htmlFor="positionTypeC2C">
                 Corp to Corp (C2C)
+              </label>
+            </div>
+          </div>
+        </div>
+        <div className="form-group text-start ">
+          <label>Benefits</label>
+          <div className="d-flex flex-wrap justify-content-start">
+            <div className="form-check gap-2">
+              <input
+                type="radio"
+                className="form-check-input radio-input"
+                id="benefitsAvailable"
+                value="Available"
+                checked={benefits === 'Available'}
+                onChange={handleBenefitsChange}
+                required
+              />
+              <label className="form-check-label" htmlFor="benefitsAvailable">
+                Available
+              </label>
+            </div>
+            <div className="form-check gap-2">
+              <input
+                type="radio"
+                className="form-check-input radio-input"
+                id="benefitsNotAvailable"
+                value="Not Available"
+                checked={benefits === 'Not Available'}
+                onChange={handleBenefitsChange}
+                required
+              />
+              <label className="form-check-label" htmlFor="benefitsNotAvailable">
+                Not Available
               </label>
             </div>
           </div>
@@ -134,6 +203,7 @@ const JobPost = () => {
               id="newQuestion"
               value={questions[0]}
               onChange={(e) => handleQuestionChange(e, 0)}
+              required
             />
             <FaPlus className="cursor-pointer" onClick={handleAddQuestion} />
           </div>
@@ -144,6 +214,7 @@ const JobPost = () => {
                 className="form-control me-2"
                 value={question}
                 onChange={(e) => handleQuestionChange(e, index + 1)}
+                required
               />
               <FaTimes
                 className="cursor-pointer"
