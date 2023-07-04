@@ -5,9 +5,9 @@ import './jobPost.css';
 const JobPost = () => {
   const [position, setPosition] = useState('')
   const [description, setDescription] = useState('')
-  const [positionType, setPositionType] = useState([])
+  const [positionType, setPositionType] = useState(["W2"])
   const [questions, setQuestions] = useState(['']);
-  const [benefits, setBenefits] = useState('')
+  const [benefits, setBenefits] = useState("Available")
   const [status, setStatus] = useState('draft')
 
   const handlePositionChange = (e) => {

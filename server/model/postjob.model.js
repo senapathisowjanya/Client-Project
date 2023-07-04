@@ -4,12 +4,14 @@ const PostJobSchema = mongoose.Schema({
   position: String,
   jobDescription: String,
   positionType: {
-    type: String,
-    enum: ['W2', 'Contract to hire', 'Corp to Corp'],
+    type: Array,
+   
+   
   },
   benefits: {
     type: String,
     enum: ['Available', 'Not Available'],
+   
   },
   addNewQuestion: Array,
   status:{
