@@ -1,109 +1,65 @@
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import 'bootstrap/dist/css/bootstrap.css'; // Import Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.css';
+import './Signup.css';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
   const [userType, setUserType] = useState('recruiter');
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
+    setIsFormSubmitted(false);
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+    setIsFormSubmitted(false);
   };
 
   const handleUserTypeChange = (e) => {
     setUserType(e.target.value);
-  };
-
-  const validateForm = () => {
-    let isValid = true;
-
-    if (!email.endsWith('@gmail.com')) {
-      setEmailError('Please enter a valid Gmail address');
-      isValid = false;
-    } else {
-      setEmailError('');
-    }
-
-    if (!/(?=.*[A-Z])/.test(password)) {
-      setPasswordError('At least one uppercase letter is required');
-      isValid = false;
-    } else if (password.length < 8) {
-      setPasswordError('Password must be at least 8 characters long');
-      isValid = false;
-    } else if (!/(?=.*\d)/.test(password)) {
-      setPasswordError('At least one number is required');
-      isValid = false;
-    } else if (!/(?=.*[!@#$%^&*])/.test(password)) {
-      setPasswordError('At least one symbol is required');
-      isValid = false;
-    } else {
-      setPasswordError('');
-    }
-
-    return isValid;
+    
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!email || !password ||!userType) {
+      setIsFormSubmitted(true);
+      
+      return;
+    }
+
     let obj = {
       email,
       password,
     };
 
-    if (validateForm()) {
-      fetch('http://localhost:8080/user/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(obj),
+    fetch('http://localhost:8080/user/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(obj),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.msg);
+       
       })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data.msg);
-          if (data.msg === 'User Successfully Registered') {
-            toast.success(data.msg, {
-              position: 'top-center',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: 'dark',
-            });
-          } else {
-            toast.warn(data.msg, {
-              position: 'top-center',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: 'dark',
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-    }
-    setTimeout(() => {
-      setEmail('');
-      setPassword('');
-    }, 1000);
+      .catch((err) => {
+        console.log(err.message);
+      });
+
+    setEmail('');
+    setPassword('');
   };
 
   return (
     <div className="container d-flex align-items-center justify-content-center vh-100">
-      <div className="signup-form-container border p-4 custom-width">
+      <div className="signup-form-container">
         <h1 className="text-center text-gray">Register</h1>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -112,9 +68,8 @@ const Signup = () => {
               type="text"
               value={email}
               onChange={handleEmailChange}
-              className={`form-control ${emailError ? 'is-invalid' : ''}`}
+              className={`form-control ${isFormSubmitted && !email ? 'is-invalid' : ''}`}
             />
-            {emailError && <p className="error-message">{emailError}</p>}
           </div>
           <div className="form-group">
             <label>Password:</label>
@@ -122,9 +77,8 @@ const Signup = () => {
               type="password"
               value={password}
               onChange={handlePasswordChange}
-              className={`form-control ${passwordError ? 'is-invalid' : ''}`}
+              className={`form-control ${isFormSubmitted && !password ? 'is-invalid' : ''}`}
             />
-            {passwordError && <p className="error-message">{passwordError}</p>}
           </div>
           <div className="form-group">
             <div className="user-type-group">
@@ -152,24 +106,13 @@ const Signup = () => {
           </div>
           <div className="form-group">
             <div className="text-center">
-              <button type="submit" className="btn btn-primary bg-success text-white">
+              <button type="submit" className="signup-button">
                 REGISTER
               </button>
             </div>
           </div>
         </form>
-        <ToastContainer
-          position="top-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
+        
       </div>
     </div>
   );
