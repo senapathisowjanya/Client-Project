@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const ImageSchema = mongoose.Schema({
+const JobSeekerSchema = mongoose.Schema({
     firstName: {
         type: String,
         required: true,
@@ -22,6 +22,6 @@ const ImageSchema = mongoose.Schema({
     }
 })
 
-const ImageModel = mongoose.model("Image", ImageSchema)
+const JobSeekerModel = mongoose.model("Image", JobSeekerSchema)
 
-module.exports = ImageModel
+module.exports = JobSeekerModel
