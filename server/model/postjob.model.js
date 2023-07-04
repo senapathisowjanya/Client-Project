@@ -18,7 +18,8 @@ const PostJobSchema = mongoose.Schema({
     type: String,
     default:"Draft",
     enum:["Draft", "Posted"]
-  }
+  },
+  userID: String
 });
 
 const PostJobModel = mongoose.model("PostJob", PostJobSchema);
